@@ -1,72 +1,42 @@
-# 🧮 Math Animation System
+# Math Animation System
 
-Beautiful step-by-step math equation solver with animations, powered by **Manim** and **mathsteps**.
+Step-by-step math equation solver with animations, powered by Manim and mathsteps.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Manim](https://img.shields.io/badge/manim-community-orange.svg)
+## Features
 
-## ✨ Features
+- Step-by-step equation solving
+- Beautiful animations with Manim
+- Telegram bot interface
+- LaTeX support
+- Batch processing
+- JSON export
 
-- 📊 **Step-by-step equation solving** with detailed explanations
-- 🎬 **Beautiful animations** created with Manim Community
-- 🤖 **Telegram bot interface** for easy access
-- 📝 **LaTeX support** for mathematical notation
-- 🔄 **Batch processing** for multiple equations
-- 💾 **JSON export** of solutions
+## What Can It Solve?
 
-## 🎯 What Can It Solve?
+- Linear equations: `5x + 3 = 0`
+- Quadratic equations: `x^2 + 2x + 1 = 0`
+- Equations with radicals: `sqrt(x+5) = 3`
+- Complex expressions: `2x^2 + 4x + 2`
+- LaTeX notation: `\sqrt{x+5} - 2 = \sqrt{7-x} + 3`
 
-- ✅ Linear equations: `5x + 3 = 0`
-- ✅ Quadratic equations: `x^2 + 2x + 1 = 0`
-- ✅ Equations with radicals: `sqrt(x+5) = 3`
-- ✅ Complex expressions: `2x^2 + 4x + 2`
-- ✅ LaTeX notation: `\sqrt{x+5} - 2 = \sqrt{7-x} + 3`
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.8+
 - Node.js (for mathsteps)
-- FFmpeg (for video generation)
+- FFmpeg
 
 ### Installation
 
-1. **Clone the repository**
 ```bash
 git clone https://github.com/yourusername/math-animator.git
 cd math-animator
-```
-
-2. **Install Python dependencies**
-```bash
 pip install -r requirements.txt
-```
-
-3. **Install Node.js dependencies**
-```bash
 npm install mathsteps
 ```
 
-4. **Install Manim Community**
-```bash
-# On Ubuntu/Debian
-sudo apt-get install ffmpeg
-pip install manim
-
-# On macOS
-brew install ffmpeg
-pip install manim
-
-# On Windows
-# Download FFmpeg from https://ffmpeg.org/
-pip install manim
-```
-
 ### Usage
-
-#### Command Line
 
 **Solve an equation:**
 ```bash
@@ -78,180 +48,103 @@ python main.py -e "5x+3=0"
 python main.py -e "x^2+2x+1=0" --animate
 ```
 
-**Batch process from file:**
+**Batch process:**
 ```bash
 python main.py -f equations.txt --batch
 ```
 
-**High quality animation:**
+**High quality:**
 ```bash
 python main.py -e "2x-6=0" --animate -q h
 ```
 
-#### Telegram Bot
+## Telegram Bot
 
-1. **Get a bot token from @BotFather**
+1. Get token from @BotFather
+2. Set token: `export TELEGRAM_BOT_TOKEN="your_token"`
+3. Run: `python telegram_bot.py`
+4. Use: `/solve 5x+3=0` or `/animate 2x-6=0`
 
-2. **Set your token:**
-```bash
-export TELEGRAM_BOT_TOKEN="your_token_here"
-```
+## Quality Levels
 
-3. **Run the bot:**
-```bash
-python telegram_bot.py
-```
-
-4. **Start chatting!**
-   - `/solve 5x+3=0` - Get step-by-step solution
-   - `/animate 2x-6=0` - Create and receive animation video
-
-## 📖 Documentation
-
-### Command Line Options
-
-```
-python main.py [OPTIONS]
-
-Options:
-  -e, --equation TEXT    Single equation to process
-  -f, --file PATH        File with equations (one per line)
-  --batch               Process multiple equations
-  --animate             Create animation with Manim
-  -q, --quality LEVEL   Animation quality: l/m/h/k (default: l)
-  --no-preview          Don't open preview after rendering
-  --save FILE           Save results to JSON
-  --quiet               Suppress output
-```
-
-### Quality Levels
-
-- `l` - Low (480p15) - Fast preview
+- `l` - Low (480p15) - Fast
 - `m` - Medium (720p30) - Balanced
-- `h` - High (1080p60) - Best for sharing
-- `k` - 4K (2160p60) - Production quality
+- `h` - High (1080p60) - Best
+- `k` - 4K (2160p60) - Production
 
-### Example Equations File
-
-Create a file `equations.txt`:
-```
-5x + 3 = 0
-x^2 + 2x + 1 = 0
-2x - 6 = 0
-sqrt(x) = 4
-```
-
-Then run:
-```bash
-python main.py -f equations.txt --batch
-```
-
-## 🎨 Animation Preview
-
-The system creates beautiful step-by-step animations showing:
-
-1. **Title slide** with the equation
-2. **Initial state** of the equation
-3. **Each transformation step** with description
-4. **Progress indicator** showing current step
-5. **Final result** with celebration effect
-
-## 🔧 Configuration
-
-Edit `config.py` to customize:
-
-- Animation timings
-- Color schemes
-- Font sizes
-- Quality presets
-
-Example presets:
-```python
-# Fast preview
-python main.py -e "5x+3=0" --animate --preset fast
-
-# Educational mode (more detailed)
-python main.py -e "x^2=4" --animate --preset educational
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
+## Troubleshooting
 
 **"Math stepper JS file not found"**
-- Make sure `math_stepper.js` is in the same directory
-- Install mathsteps: `npm install mathsteps`
+```bash
+npm install mathsteps
+```
 
 **"No steps generated"**
-- The equation might already be in simplest form
-- Try using standard notation instead of LaTeX
-- Check for parsing errors in the input
-
-**LaTeX equations not working**
-- Use `\sqrt{x}` instead of `\sqrt(x)`
-- Enclose in quotes: `python main.py -e "\sqrt{x+5}=3"`
+- Equation might already be simplified
+- Try standard notation instead of LaTeX
 
 **Animation fails**
-- Make sure FFmpeg is installed and in PATH
-- Try lower quality: `--quality l`
-- Check Manim installation: `manim --version`
+```bash
+pip install manim
+ffmpeg -version  # Check FFmpeg is installed
+```
 
-## 🤝 Contributing
+## License
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+MIT License
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Acknowledgments
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-This project is built on top of amazing open-source projects:
-
-- **[Manim Community](https://github.com/ManimCommunity/manim)** - Mathematical animation engine
-  - Documentation: https://docs.manim.community/
-  - License: MIT
-  
-- **[mathsteps](https://github.com/google/mathsteps)** - Step-by-step math solver
-  - By Google
-  - License: Apache 2.0
-
-## 💝 Support This Project
-
-If you find this project useful, please consider:
-
-- ⭐ Starring the repository
-- 🐛 Reporting bugs and issues
-- 💡 Suggesting new features
-- 🔀 Contributing code
-
-### Donations
-
-Support development of this free, open-source project:
-
-**PayPal:** https://paypal.me/yourpaypal
-
-**Binance Pay ID:** `your_binance_pay_id`
-
-**Bitcoin:** `your_bitcoin_address`
-
-## 📞 Contact
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Telegram: [@yourusername](https://t.me/yourusername)
-
-## ⚠️ Disclaimer
-
-This software is provided "as is", without warranty of any kind. The mathematical solutions are generated by the mathsteps library and should be verified for accuracy in critical applications.
+Built with:
+- [Manim Community](https://github.com/ManimCommunity/manim) - MIT License
+- [mathsteps](https://github.com/google/mathsteps) - Apache 2.0 License
 
 ---
 
-Made with ❤️ and Python
+## Support This Project
 
-**Star this repo if you find it useful!** ⭐
+If you find this useful, consider supporting:
+
+### 💰 Cryptocurrency
+
+<img src="https://img.shields.io/badge/Bitcoin-000000?style=for-the-badge&logo=bitcoin&logoColor=white" alt="Bitcoin"/>
+
+```
+15kPSKNLEgVH6Jy3RtNaT2mPsxTMS6MAEp
+```
+
+<img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Ethereum"/>
+
+```
+0xc4f7076dd25a38f2256b5c23b8ca859cc42924cf
+```
+
+<img src="https://img.shields.io/badge/BNB-F3BA2F?style=for-the-badge&logo=binance&logoColor=white" alt="BNB"/>
+
+```
+0xc4f7076dd25a38f2256b5c23b8ca859cc42924cf
+```
+
+<img src="https://img.shields.io/badge/Solana-9945FF?style=for-the-badge&logo=solana&logoColor=white" alt="Solana"/>
+
+```
+EWcxGVtbohy8CdFLb2HNUqSHdecRiWKLywgMLwsXByhn
+```
+
+### 🏦 Exchange Platforms
+
+<img src="https://img.shields.io/badge/Binance-FCD535?style=for-the-badge&logo=binance&logoColor=white" alt="Binance"/>
+
+- **URL:** https://app.binance.com/uni-qr/Uzof5Lrq
+- **ID:** `1011264323`
+
+<img src="https://img.shields.io/badge/Bybit-F7A600?style=for-the-badge&logo=bybit&logoColor=white" alt="Bybit"/>
+
+- **URL:** https://i.bybit.com/W2abUWF
+- **ID:** `467077834`
+
+### 💳 Traditional
+
+<img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal"/>
+
+https://www.paypal.com/ncp/payment/W78F6W4TXZ4CS
