@@ -5,14 +5,27 @@ This uses the Manim Community library for animations.
 GitHub: https://github.com/ManimCommunity/manim
 Documentation: https://docs.manim.community/
 
-Math processing powered by mathsteps:
-GitHub: https://github.com/google/mathsteps
+Math processing powered by SymPy (primary) and mathsteps (fallback).
 """
 
 from manim import *
-from math_bridge import MathStepperBridge
 from typing import Dict, Any
 import sys
+import os
+
+# Try CAS solver first (primary)
+try:
+    from cas_solver import solve_with_steps as cas_solve
+    HAS_CAS = True
+except ImportError:
+    HAS_CAS = False
+
+# Fallback to mathsteps bridge
+try:
+    from math_bridge import MathStepperBridge
+    HAS_BRIDGE = True
+except ImportError:
+    HAS_BRIDGE = False
 
 
 class MathStepsAnimator(Scene):
@@ -35,29 +48,52 @@ class MathStepsAnimator(Scene):
     def __init__(self, equation: str = "5x+3=0", *args, **kwargs):
         """
         Initialize with an equation or expression
-        
+
         Args:
             equation: The math input to process
         """
         super().__init__(*args, **kwargs)
         self.equation = equation
-        self.bridge = MathStepperBridge()
         self.steps_data = None
         self.current_equation = None
         self.load_steps()
     
     def load_steps(self):
-        """Load and validate steps from math stepper"""
-        result = self.bridge.get_info(self.equation)
-        
-        if not result.get('success'):
-            print(f"❌ Error loading steps: {result.get('error')}")
-            if result.get('suggestion'):
-                print(f"💡 Suggestion: {result.get('suggestion')}")
-            self.steps_data = []
-        else:
-            self.steps_data = result.get('steps', [])
-            print(f"✓ Loaded {len(self.steps_data)} steps for: {self.equation}")
+        """Load steps using CAS solver first, mathsteps as fallback"""
+        # Try CAS solver first
+        if HAS_CAS:
+            try:
+                result = cas_solve(self.equation)
+                if result.get('success'):
+                    self.steps_data = [
+                        {
+                            'step': i + 1,
+                            'description': s.get('desc', 'Solve'),
+                            'before': s.get('before', ''),
+                            'after': s.get('after', '')
+                        }
+                        for i, s in enumerate(result.get('steps', []))
+                    ]
+                    print(f"✓ CAS solver: {len(self.steps_data)} steps for: {self.equation}")
+                    return
+            except Exception as e:
+                print(f"CAS solver failed: {e}")
+
+        # Fallback to mathsteps bridge
+        if HAS_BRIDGE:
+            try:
+                bridge = MathStepperBridge()
+                result = bridge.get_info(self.equation)
+                if result.get('success'):
+                    self.steps_data = result.get('steps', [])
+                    print(f"✓ mathsteps: {len(self.steps_data)} steps for: {self.equation}")
+                    return
+            except Exception as e:
+                print(f"mathsteps bridge failed: {e}")
+
+        # Both failed
+        print(f"❌ No solver available for: {self.equation}")
+        self.steps_data = []
     
     def construct(self):
         """Main animation construction"""
@@ -350,15 +386,15 @@ class MathStepsAnimator(Scene):
 if __name__ == "__main__":
     # Handle custom equation argument
     equation = "5x+3=0"  # Default
-    
-    # Parse custom arguments
-    if "--equation" in sys.argv:
+
+    # First check environment variable (for compatibility with manim CLI)
+    if "MATH_EQUATION" in os.environ:
+        equation = os.environ["MATH_EQUATION"]
+    # Parse custom arguments as fallback
+    elif "--equation" in sys.argv:
         try:
             eq_index = sys.argv.index("--equation")
             if eq_index + 1 < len(sys.argv):
                 equation = sys.argv[eq_index + 1]
         except (ValueError, IndexError):
             pass
-    
-    # Set equation for scene
-    MathStepsAnimator.equation_to_solve = equation
