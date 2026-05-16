@@ -119,8 +119,8 @@ class Pipeline:
         for sol in result.get('solutions', []):
             self.log(f"  ══► x = {sol}", C.G + C.BOLD)
 
-    def animate(self, equation: str, quality: str = 'l') -> bool:
-        """Render Manim animation"""
+    def animate(self, equation: str, quality: str = 'l', output: str = None) -> bool:
+        """Render Manim animation. If output is given, copy the video there."""
         self.log(f"\n  Rendering animation ({quality} quality)...", C.C)
 
         result = self.solve(equation)
@@ -147,9 +147,19 @@ class Pipeline:
                 qmap = {'l': '480p15', 'm': '720p30', 'h': '1080p60', 'k': '2160p60'}
                 vdir = media / qmap.get(quality, '480p15')
                 if vdir.exists():
-                    vids = list(vdir.glob("*.mp4"))
+                    vids = list(vdir.glob("MathStepsAnimator.mp4"))
+                    if not vids:
+                        vids = list(vdir.glob("*.mp4"))
                     if vids:
-                        self.log(f"  Saved: {max(vids, key=lambda p: p.stat().st_mtime)}", C.G)
+                        src = max(vids, key=lambda p: p.stat().st_mtime)
+                        if output:
+                            import shutil
+                            dest = Path(output)
+                            dest.parent.mkdir(parents=True, exist_ok=True)
+                            shutil.copy2(src, dest)
+                            self.log(f"  Saved: {dest.resolve()}", C.G)
+                        else:
+                            self.log(f"  Saved: {src}", C.G)
                 return True
             else:
                 self.log(f"  Manim failed (code {r.returncode})", C.R)
@@ -183,6 +193,7 @@ def main():
 examples:
   %(prog)s "5x+3=0"                    solve equation
   %(prog)s "5x+3=0" -a                 solve and animate
+  %(prog)s "5x+3=0" -a out.mp4         animate, save to out.mp4
   %(prog)s "5x+3=0" -a -q h            high quality animation
   %(prog)s -f equations.txt             batch solve from file
   %(prog)s -f equations.txt -a          batch animate
@@ -193,7 +204,7 @@ quality: l=480p15  m=720p30  h=1080p60  k=2160p60
 
     p.add_argument('equation', nargs='?', help='equation to solve')
     p.add_argument('-f', '--file', help='equations file (one per line)')
-    p.add_argument('-a', '--animate', action='store_true', help='render animation')
+    p.add_argument('-a', '--animate', nargs='?', const=True, metavar='FILE', help='render animation (optionally specify output .mp4)')
     p.add_argument('-q', '--quality', choices='lmhk', default='l', help='animation quality (default: l)')
     p.add_argument('-o', '--output', metavar='FILE', help='save results as JSON')
     p.add_argument('-n', '--no-preview', action='store_true', help='skip video preview')
@@ -208,13 +219,21 @@ quality: l=480p15  m=720p30  h=1080p60  k=2160p60
     pipe = Pipeline(quiet=args.silent)
     results = {}
 
+    # Determine animate output path
+    animate_out = None
+    if args.animate:
+        if isinstance(args.animate, str):
+            animate_out = args.animate
+            if not animate_out.endswith('.mp4'):
+                animate_out += '.mp4'
+
     if args.equation:
         result = pipe.solve(args.equation)
         results[args.equation] = result
         pipe.print_result(args.equation, result)
 
         if args.animate and result.get('success'):
-            if not pipe.animate(args.equation, args.quality):
+            if not pipe.animate(args.equation, args.quality, output=animate_out):
                 sys.exit(1)
 
     elif args.file:
@@ -235,7 +254,7 @@ quality: l=480p15  m=720p30  h=1080p60  k=2160p60
         if args.animate:
             for eq in results:
                 if results[eq].get('success'):
-                    pipe.animate(eq, args.quality)
+                    pipe.animate(eq, args.quality, output=animate_out)
 
     if args.output:
         Path(args.output).parent.mkdir(parents=True, exist_ok=True)
