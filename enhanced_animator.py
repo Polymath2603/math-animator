@@ -5,7 +5,7 @@ This uses the Manim Community library for animations.
 GitHub: https://github.com/ManimCommunity/manim
 Documentation: https://docs.manim.community/
 
-Math processing powered by SymPy (primary) and mathsteps (fallback).
+Math processing powered by mathsteps (primary) and SymPy (fallback).
 """
 
 from manim import *
@@ -13,19 +13,19 @@ from typing import Dict, Any
 import sys
 import os
 
-# Try CAS solver first (primary)
-try:
-    from cas_solver import solve_with_steps as cas_solve
-    HAS_CAS = True
-except ImportError:
-    HAS_CAS = False
-
-# Fallback to mathsteps bridge
+# Try mathsteps bridge first (primary - detailed steps)
 try:
     from math_bridge import MathStepperBridge
     HAS_BRIDGE = True
 except ImportError:
     HAS_BRIDGE = False
+
+# Fallback to CAS solver (SymPy)
+try:
+    from cas_solver import solve_with_steps as cas_solve
+    HAS_CAS = True
+except ImportError:
+    HAS_CAS = False
 
 
 class MathStepsAnimator(Scene):
@@ -59,8 +59,20 @@ class MathStepsAnimator(Scene):
         self.load_steps()
     
     def load_steps(self):
-        """Load steps using CAS solver first, mathsteps as fallback"""
-        # Try CAS solver first
+        """Load steps using mathsteps first, CAS as fallback"""
+        # Try mathsteps bridge first (detailed step-by-step)
+        if HAS_BRIDGE:
+            try:
+                bridge = MathStepperBridge()
+                result = bridge.get_info(self.equation)
+                if result.get('success'):
+                    self.steps_data = self._flatten_steps(result.get('steps', []))
+                    print(f"✓ mathsteps: {len(self.steps_data)} steps for: {self.equation}")
+                    return
+            except Exception as e:
+                print(f"mathsteps failed: {e}")
+
+        # Fallback to CAS solver
         if HAS_CAS:
             try:
                 result = cas_solve(self.equation)
@@ -79,21 +91,29 @@ class MathStepsAnimator(Scene):
             except Exception as e:
                 print(f"CAS solver failed: {e}")
 
-        # Fallback to mathsteps bridge
-        if HAS_BRIDGE:
-            try:
-                bridge = MathStepperBridge()
-                result = bridge.get_info(self.equation)
-                if result.get('success'):
-                    self.steps_data = result.get('steps', [])
-                    print(f"✓ mathsteps: {len(self.steps_data)} steps for: {self.equation}")
-                    return
-            except Exception as e:
-                print(f"mathsteps bridge failed: {e}")
-
-        # Both failed
         print(f"❌ No solver available for: {self.equation}")
         self.steps_data = []
+
+    def _flatten_steps(self, steps):
+        """Flatten nested substeps into a single list for animation"""
+        flat = []
+        for step in steps:
+            flat.append({
+                'step': len(flat) + 1,
+                'description': step.get('description', ''),
+                'before': step.get('before', ''),
+                'after': step.get('after', ''),
+                'phase': step.get('phase', '')
+            })
+            for sub in step.get('substeps', []):
+                flat.append({
+                    'step': len(flat) + 1,
+                    'description': '  ↳ ' + sub.get('description', ''),
+                    'before': sub.get('before', ''),
+                    'after': sub.get('after', ''),
+                    'phase': sub.get('phase', '')
+                })
+        return flat
     
     def construct(self):
         """Main animation construction"""
