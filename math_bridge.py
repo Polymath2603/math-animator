@@ -51,7 +51,7 @@ class MathStepperBridge:
                 ['node', str(self.js_file), input_string],
                 capture_output=True,
                 text=True,
-                timeout=10
+                timeout=30
             )
             
             if result.returncode != 0:
