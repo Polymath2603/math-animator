@@ -25,9 +25,15 @@ except ImportError:
 SKIP_DESCRIPTIONS = {
     'remove adding zero',
     'remove multiplying by one',
+    'remove multiplying by zero',
+    'remove multiplying by negative one',
     'multiply by zero',
     'multiply by one',
-    'remove multiplying by zero',
+    'simplify left side',
+    'simplify right side',
+    'simplify terms',
+    'collect like terms',
+    'add polynomial terms',
 }
 
 
