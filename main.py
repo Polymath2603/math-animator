@@ -140,31 +140,26 @@ class Pipeline:
                str(animator), "MathStepsAnimator", "--disable_caching"]
 
         try:
-            r = subprocess.run(cmd, cwd=str(self.dir), capture_output=True,
-                               text=True, env=env)
+            r = subprocess.run(cmd, cwd=str(self.dir), env=env)
             if r.returncode == 0:
                 media = self.dir / "media" / "videos" / "enhanced_animator"
-                qmap = {'l': '480p15', 'm': '720p30', 'h': '1080p60', 'k': '2160p60'}
-                vdir = media / qmap.get(quality, '480p15')
-                if vdir.exists():
-                    vids = list(vdir.glob("MathStepsAnimator.mp4"))
-                    if not vids:
-                        vids = list(vdir.glob("*.mp4"))
-                    if vids:
-                        src = max(vids, key=lambda p: p.stat().st_mtime)
-                        if output:
-                            import shutil
-                            dest = Path(output)
-                            dest.parent.mkdir(parents=True, exist_ok=True)
-                            shutil.copy2(src, dest)
-                            self.log(f"  Saved: {dest.resolve()}", C.G)
-                        else:
-                            self.log(f"  Saved: {src}", C.G)
+                src = None
+                if media.exists():
+                    for mp4 in media.rglob("MathStepsAnimator.mp4"):
+                        if src is None or mp4.stat().st_mtime > src.stat().st_mtime:
+                            src = mp4
+                if src and src.exists():
+                    if output:
+                        import shutil
+                        dest = Path(output)
+                        dest.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(src, dest)
+                        self.log(f"  Saved: {dest.resolve()}", C.G)
+                    else:
+                        self.log(f"  Saved: {src}", C.G)
                 return True
             else:
                 self.log(f"  Manim failed (code {r.returncode})", C.R)
-                if r.stderr:
-                    self.log(f"  {r.stderr[:200]}", C.R)
                 return False
         except FileNotFoundError:
             self.log("  Manim not installed: pip install manim", C.R)

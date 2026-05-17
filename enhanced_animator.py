@@ -31,11 +31,6 @@ except ImportError:
 class MathStepsAnimator(Scene):
     """Main scene for animating math steps with enhanced UI"""
     
-    # Configuration
-    config.pixel_height = 1080
-    config.pixel_width = 1920
-    config.frame_rate = 60
-    
     # Enhanced color scheme for better visual hierarchy
     COLOR_TITLE = "#4A90E2"        # Professional blue
     COLOR_EQUATION = "#FFFFFF"     # White
