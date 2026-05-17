@@ -1,0 +1,21 @@
+{
+  "name": "math-animator",
+  "version": "1.0.0",
+  "description": "Math equation solver with step-by-step animations",
+  "main": "math_stepper.js",
+  "scripts": {
+    "test": "node math_stepper.js \"5x+3=0\""
+  },
+  "keywords": [
+    "math",
+    "equation",
+    "solver",
+    "animation",
+    "manim"
+  ],
+  "author": "Math Animator Team",
+  "license": "MIT",
+  "dependencies": {
+    "mathsteps": "^0.2.0"
+  }
+}

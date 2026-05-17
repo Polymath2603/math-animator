@@ -1,29 +1,17 @@
-# Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+*.pyc
 
-# Virtual environments
+# Virtual env
 venv/
-env/
-ENV/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Manim output
 media/
@@ -33,30 +21,10 @@ media/
 
 # Node
 node_modules/
-package-lock.json
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Environment variables
+# Env
 .env
 
 # Test outputs
 test_output/
 results/
-*.json
-
-# Temporary files
-temp/
-tmp/

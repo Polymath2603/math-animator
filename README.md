@@ -1,150 +1,108 @@
 # Math Animation System
 
-Step-by-step math equation solver with animations, powered by Manim and mathsteps.
+Step-by-step math equation solver with animated visualizations.
 
 ## Features
 
-- Step-by-step equation solving
-- Beautiful animations with Manim
+- **mathsteps** as primary solver (detailed step-by-step with substeps)
+- **SymPy CAS** as fallback for equations mathsteps can't handle
+- Manim animations with permanent progress bar and LaTeX rendering
 - Telegram bot interface
-- LaTeX support
-- Batch processing
-- JSON export
-
-## What Can It Solve?
-
-- Linear equations: `5x + 3 = 0`
-- Quadratic equations: `x^2 + 2x + 1 = 0`
-- Equations with radicals: `sqrt(x+5) = 3`
-- Complex expressions: `2x^2 + 4x + 2`
-- LaTeX notation: `\sqrt{x+5} - 2 = \sqrt{7-x} + 3`
+- Batch processing and JSON export
 
 ## Quick Start
 
-### Prerequisites
-
-- Python 3.8+
-- Node.js (for mathsteps)
-- FFmpeg
-
-### Installation
-
 ```bash
-git clone https://github.com/yourusername/math-animator.git
-cd math-animator
 pip install -r requirements.txt
-npm install mathsteps
+npm install
+
+# Solve
+python main.py "5x+3=0"
+
+# Solve + animate
+python main.py "5x+3=0" -a
+
+# Save animation to file
+python main.py "5x+3=0" -a output.mp4
+
+# High quality
+python main.py "5x+3=0" -a -q h
+
+# Batch
+python main.py -f equations.txt
+
+# JSON export
+python main.py "5x+3=0" -o results.json
 ```
 
-### Usage
+## CLI Reference
 
-**Solve an equation:**
-```bash
-python main.py -e "5x+3=0"
+```
+python main.py [equation] [options]
+
+positional:
+  equation              equation to solve
+
+options:
+  -f FILE, --file FILE  equations file (one per line)
+  -a, --animate [FILE]  render animation (optionally specify output .mp4)
+  -q {l,m,h,k}         animation quality (default: l)
+  -o FILE, --output     save results as JSON
+  -s, --silent          quiet output
+
+quality: l=480p15  m=720p30  h=1080p60  k=2160p60
 ```
 
-**Create an animation:**
-```bash
-python main.py -e "x^2+2x+1=0" --animate
-```
+## How It Works
 
-**Batch process:**
-```bash
-python main.py -f equations.txt --batch
-```
+The solver uses a multi-phase pipeline:
 
-**High quality:**
-```bash
-python main.py -e "2x-6=0" --animate -q h
-```
+1. **mathsteps** (Node.js) — primary solver, produces detailed step-by-step solutions
+   - Phase 1: Simplify left side (expand, distribute, collect)
+   - Phase 2: Simplify right side
+   - Phase 3: Solve the simplified equation
+2. **SymPy CAS** (Python) — fallback for equations mathsteps can't handle
+
+## Supported Equations
+
+- Linear: `5x + 3 = 0`
+- Quadratic: `x^2 + 2x + 1 = 0`
+- Polynomial: `(x+2)^3 - (x-2)^3 = (2x+1)^3 - (2x-1)^3`
+- Exponential: `e^(2x) = 4`
+- Trigonometric: `sin(x) = 0`
+- Radicals: `sqrt(x+5) = x - 3`
+- Rational: `(x^2+1)/(x-1) = 3`
+- Complex roots, reciprocal, polynomial traps
 
 ## Telegram Bot
 
-1. Get token from @BotFather
-2. Set token: `export TELEGRAM_BOT_TOKEN="your_token"`
-3. Run: `python telegram_bot.py`
-4. Use: `/solve 5x+3=0` or `/animate 2x-6=0`
-
-## Quality Levels
-
-- `l` - Low (480p15) - Fast
-- `m` - Medium (720p30) - Balanced
-- `h` - High (1080p60) - Best
-- `k` - 4K (2160p60) - Production
-
-## Troubleshooting
-
-**"Math stepper JS file not found"**
 ```bash
-npm install mathsteps
+export TELEGRAM_BOT_TOKEN="your_token"
+python telegram_bot.py
 ```
 
-**"No steps generated"**
-- Equation might already be simplified
-- Try standard notation instead of LaTeX
+Commands: `/solve 5x+3=0` or `/animate 2x-6=0`
 
-**Animation fails**
-```bash
-pip install manim
-ffmpeg -version  # Check FFmpeg is installed
-```
+## Dependencies
 
-## License
+**Python**: manim, sympy, python-telegram-bot, numpy, scipy
+**Node.js**: mathsteps
 
-MIT License
+## Credits
 
-## Acknowledgments
+- [Manim Community](https://github.com/ManimCommunity/manim) — animation engine
+- [mathsteps](https://github.com/google/mathsteps) — equation solver
 
-Built with:
-- [Manim Community](https://github.com/ManimCommunity/manim) - MIT License
-- [mathsteps](https://github.com/google/mathsteps) - Apache 2.0 License
+## Support
 
----
-
-## Support This Project
-
-If you find this useful, consider supporting:
-
-### 💰 Cryptocurrency
-
-<img src="https://img.shields.io/badge/Bitcoin-000000?style=for-the-badge&logo=bitcoin&logoColor=white" alt="Bitcoin"/>
-
-```
-15kPSKNLEgVH6Jy3RtNaT2mPsxTMS6MAEp
-```
-
-<img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Ethereum"/>
-
-```
-0xc4f7076dd25a38f2256b5c23b8ca859cc42924cf
-```
-
-<img src="https://img.shields.io/badge/BNB-F3BA2F?style=for-the-badge&logo=binance&logoColor=white" alt="BNB"/>
-
-```
-0xc4f7076dd25a38f2256b5c23b8ca859cc42924cf
-```
-
-<img src="https://img.shields.io/badge/Solana-9945FF?style=for-the-badge&logo=solana&logoColor=white" alt="Solana"/>
-
-```
-EWcxGVtbohy8CdFLb2HNUqSHdecRiWKLywgMLwsXByhn
-```
-
-### 🏦 Exchange Platforms
-
-<img src="https://img.shields.io/badge/Binance-FCD535?style=for-the-badge&logo=binance&logoColor=white" alt="Binance"/>
-
-- **URL:** https://app.binance.com/uni-qr/Uzof5Lrq
-- **ID:** `1011264323`
-
-<img src="https://img.shields.io/badge/Bybit-F7A600?style=for-the-badge&logo=bybit&logoColor=white" alt="Bybit"/>
-
-- **URL:** https://i.bybit.com/W2abUWF
-- **ID:** `467077834`
-
-### 💳 Traditional
-
-<img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" alt="PayPal"/>
-
-https://www.paypal.com/ncp/payment/W78F6W4TXZ4CS
+| | |
+|---|---|
+| PayPal | `paypal.com/ncp/payment/W78F6W4TXZ4CS` |
+| Binance | `1011264323` |
+| Bybit | `467077834` |
+| TRC20 | `TMW5uSDN6sMUBNirMoqY1icpsfa7GhPZfK` |
+| BEP20/ERC20 | `0x7a8887c2ac3e596f6170c9e28b44e6b6d025c854` |
+| LTC | `LVswXiD6Vd2dejXvGbZLa1R8jkvg748F4q` |
+| TON | `UQAllRezWgHi3LPrSwyvAb4zazIph6j6goU7lMaqcFWFBxVH` |
+| BTC | `1rSX6BDN1nqDMyBHqceySkZSs6PHUP23m` |
+| SOL | `d8RonhC8oEHssrQjN1Y4UWHnd6MMP33XGCKtfNL4j59` |
