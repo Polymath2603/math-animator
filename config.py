@@ -1,10 +1,5 @@
 """
-Configuration file for Math Animation System
-Customize animation styles, colors, timing, and behavior
-
-GitHub:
-- Manim: https://github.com/ManimCommunity/manim
-- mathsteps: https://github.com/google/mathsteps
+Configuration for Math Animation System
 """
 
 # ============================================================================
@@ -19,19 +14,19 @@ ANIMATION_CONFIG = {
 }
 
 # ============================================================================
-# COLOR SCHEME (Professional & Modern)
+# COLOR SCHEME
 # ============================================================================
 
 COLORS = {
-    'title': '#4A90E2',           # Professional blue
-    'equation': '#FFFFFF',        # White
-    'description': '#F5A623',     # Warm orange
-    'result': '#7ED321',          # Success green
-    'highlight': '#FF6B6B',       # Attention red
-    'error': '#E74C3C',           # Error red
-    'background': '#1a1a2e',      # Dark navy
-    'step_bg': '#2C3E50',         # Dark blue-gray
-    'accent': '#9B59B6',          # Purple accent
+    'title': '#4A90E2',
+    'equation': '#FFFFFF',
+    'description': '#F5A623',
+    'result': '#7ED321',
+    'highlight': '#FF6B6B',
+    'error': '#E74C3C',
+    'background': '#1a1a2e',
+    'step_bg': '#2C3E50',
+    'accent': '#9B59B6',
 }
 
 # ============================================================================
@@ -97,10 +92,10 @@ OUTPUT = {
 }
 
 QUALITY_PRESETS = {
-    'l': {'resolution': '480p', 'fps': 15, 'description': 'Low - Fast preview'},
-    'm': {'resolution': '720p', 'fps': 30, 'description': 'Medium - Balanced'},
-    'h': {'resolution': '1080p', 'fps': 60, 'description': 'High - Best for sharing'},
-    'k': {'resolution': '2160p', 'fps': 60, 'description': '4K - Production quality'},
+    'l': {'resolution': '480p', 'fps': 15, 'description': 'Low - fast preview'},
+    'm': {'resolution': '720p', 'fps': 30, 'description': 'Medium'},
+    'h': {'resolution': '1080p', 'fps': 60, 'description': 'High'},
+    'k': {'resolution': '2160p', 'fps': 60, 'description': '4K'},
 }
 
 # ============================================================================
@@ -135,7 +130,7 @@ UI = {
 # PRESETS
 # ============================================================================
 
-# Fast animation for quick preview
+# Fast preview
 PRESET_FAST = {
     'animation_config': {
         'pixel_height': 720,
@@ -155,7 +150,7 @@ PRESET_FAST = {
     }
 }
 
-# High quality for presentations
+# High quality / presentations
 PRESET_PRESENTATION = {
     'animation_config': {
         'pixel_height': 1440,
@@ -175,7 +170,7 @@ PRESET_PRESENTATION = {
     }
 }
 
-# Educational/detailed mode
+# Educational / detailed
 PRESET_EDUCATIONAL = {
     'behavior': {
         'show_step_numbers': True,
@@ -192,7 +187,7 @@ PRESET_EDUCATIONAL = {
     }
 }
 
-# Minimal/clean style
+# Minimal / clean
 PRESET_MINIMAL = {
     'ui': {
         'use_rounded_corners': False,

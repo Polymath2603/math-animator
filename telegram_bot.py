@@ -2,17 +2,7 @@
 """
 Math Animation Telegram Bot
 
-A Telegram bot interface for the Math Animation System.
-Allows users to solve equations and create animations directly from Telegram.
-
-Setup:
-1. Create a bot with @BotFather on Telegram
-2. Get your bot token
-3. Set environment variable: export TELEGRAM_BOT_TOKEN="your_token_here"
-4. Run: python telegram_bot.py
-
-Dependencies:
-    pip install python-telegram-bot
+Solves equations and creates animations via Telegram.
 """
 
 import os
@@ -33,25 +23,21 @@ try:
         filters
     )
 except ImportError:
-    print("❌ python-telegram-bot not installed!")
-    print("Install it with: pip install python-telegram-bot")
+    print("python-telegram-bot not found: pip install python-telegram-bot")
     sys.exit(1)
 
-# Import our math animation system
 from main import MathAnimationPipeline, Colors
 
-# Configure logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-# Bot configuration
 DONATION_LINKS = {
-    'paypal': 'https://paypal.me/yourpaypal',
-    'binance': 'your_binance_pay_id',
-    'bitcoin': 'your_bitcoin_address'
+    'paypal': 'https://paypal.com/ncp/payment/W78F6W4TXZ4CS',
+    'binance': '1011264323',
+    'bitcoin': '1rSX6BDN1nqDMyBHqceySkZSs6PHUP23m'
 }
 
 SOURCE_CODE_URL = 'https://github.com/yourusername/math-animator'
@@ -59,13 +45,13 @@ SOURCE_CODE_URL = 'https://github.com/yourusername/math-animator'
 HELP_TEXT = """
 🧮 *Math Animation Bot* 🎬
 
-I can solve equations and create beautiful step-by-step animations!
+I can solve equations and create step-by-step animations!
 
 *Commands:*
 /start - Start the bot
 /help - Show this help message
 /solve <equation> - Solve an equation
-/animate <equation> - Create animation (may take time)
+/animate <equation> - Create animation
 /donate - Support this project
 /source - View source code
 
@@ -106,18 +92,18 @@ If you find this useful, consider donating:
 
 class MathBot:
     """Telegram bot for math animations"""
-    
+
     def __init__(self, token: str):
         self.token = token
         self.pipeline = MathAnimationPipeline(quiet=True)
         self.app = None
-    
+
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /start command"""
+        """Handle /start"""
         welcome_text = """
 👋 *Welcome to Math Animation Bot!*
 
-I can help you solve equations step-by-step and create beautiful animations.
+I can help you solve equations step-by-step and create animations.
 
 Try: `/solve 5x+3=0`
 
@@ -142,16 +128,16 @@ For more info, use /help
         )
     
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /help command"""
+        """Handle /help"""
         await update.message.reply_text(HELP_TEXT, parse_mode='Markdown')
     
     async def about_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /about command"""
+        """Handle /about"""
         about = ABOUT_TEXT.format(source_url=SOURCE_CODE_URL)
         await update.message.reply_text(about, parse_mode='Markdown')
     
     async def donate_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /donate command"""
+        """Handle /donate"""
         donate_text = f"""
 💝 *Support This Project*
 
@@ -186,7 +172,7 @@ Your support helps keep this project free and open source! 🙏
         )
     
     async def source_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /source command"""
+        """Handle /source"""
         source_text = f"""
 💻 *Source Code*
 
@@ -223,7 +209,7 @@ Feel free to contribute, report issues, or fork the project!
         )
     
     async def solve_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /solve command"""
+        """Handle /solve"""
         if not context.args:
             await update.message.reply_text(
                 "❌ Please provide an equation!\n\n"
@@ -233,32 +219,28 @@ Feel free to contribute, report issues, or fork the project!
             return
         
         equation = ' '.join(context.args)
-        
-        # Send processing message
+
         processing_msg = await update.message.reply_text(
             f"🔄 Solving: `{equation}`\n\nPlease wait...",
             parse_mode='Markdown'
         )
-        
+
         try:
-            # Process equation
             result = self.pipeline.process_equation(equation, verbose=False)
             
             if not result.get('success'):
                 error_msg = f"❌ *Error:* {result.get('error')}\n\n"
                 if result.get('suggestion'):
                     error_msg += f"💡 *Suggestion:* {result.get('suggestion')}"
-                
+
                 await processing_msg.edit_text(error_msg, parse_mode='Markdown')
                 return
-            
-            # Format solution
+
             solution_text = f"✅ *Solved:* `{equation}`\n\n"
             solution_text += f"*Type:* {result.get('type')}\n"
             solution_text += f"*Steps:* {result.get('stepCount')}\n\n"
-            
-            # Add steps
-            for step in result.get('steps', [])[:10]:  # Limit to 10 steps for Telegram
+
+            for step in result.get('steps', [])[:10]:
                 solution_text += f"*Step {step['step']}:* {step['description']}\n"
                 solution_text += f"`{step['before']}`\n"
                 solution_text += f"↓\n"
@@ -279,7 +261,7 @@ Feel free to contribute, report issues, or fork the project!
             )
     
     async def animate_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Handle /animate command"""
+        """Handle /animate"""
         if not context.args:
             await update.message.reply_text(
                 "❌ Please provide an equation!\n\n"
@@ -428,7 +410,7 @@ Feel free to contribute, report issues, or fork the project!
 
 
 def main():
-    """Main entry point"""
+    """Entry point"""
     # Get token from environment
     token = os.getenv('TELEGRAM_BOT_TOKEN')
     

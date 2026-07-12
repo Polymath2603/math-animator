@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-TRUE CAS STEP SOLVER - Full step-by-step mathematical reasoning
-Handles ALL equation types with proper parsing and reasoning
+CAS step-by-step equation solver using SymPy
 """
 
 import sympy as sp

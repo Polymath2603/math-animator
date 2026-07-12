@@ -1,107 +1,70 @@
-# Math Animation System
+# Math Animator 📐
 
-Step-by-step math equation solver with animated visualizations.
+> A lightweight Python tool that generates Manim-style math animation videos using a step-based API. No heavy Manim dependency required at the core — renders frames with Pillow and encodes with FFmpeg, with optional Manim integration for high-quality output.
+
+Solves equations step-by-step using **mathsteps** (Node.js, primary) or **SymPy** (CAS, fallback), then produces animated video walkthroughs of each solution step.
+
+## Status
+
+Active development 🟢
 
 ## Features
 
-- **mathsteps** as primary solver (detailed step-by-step with substeps)
-- **SymPy CAS** as fallback for equations mathsteps can't handle
-- Manim animations with permanent progress bar and LaTeX rendering
-- Telegram bot interface
-- Batch processing and JSON export
+- **Dual-solver pipeline** — mathsteps for detailed step-by-step solving, SymPy CAS as fallback
+- **Step-based animation** — renders each solving step as a discrete animation frame
+- **Video output** — MP4 via FFmpeg (Manim optional for richer animations)
+- **Telegram bot** — solve and animate via Telegram messages
+- **Batch processing** — solve or animate multiple equations from a file
+- **Configurable** — animation styles, colors, timing, and quality presets
+- **ASCII-to-LaTeX conversion** — automatically translates plain math notation to rendered math
+
+## Architecture
+
+```
+math-animator/
+├── main.py                — CLI entry point & pipeline orchestrator
+├── enhanced_animator.py   — Manim-based animation scene
+├── math_bridge.py         — Bridge to Node.js mathsteps solver
+├── cas_solver.py          — SymPy CAS fallback solver
+├── config.py              — Animation colors, timing, and behavior settings
+├── telegram_bot.py        — Telegram bot interface
+├── test_system.py         — Integration tests
+├── docs/                  — Documentation
+├── examples/              — Usage examples
+└── CHANGELOG.md
+```
 
 ## Quick Start
 
 ```bash
-pip install -r requirements.txt
-npm install
-
-# Solve
+# Solve an equation
 python main.py "5x+3=0"
 
-# Solve + animate
+# Solve and animate (requires manim)
 python main.py "5x+3=0" -a
 
-# Save animation to file
-python main.py "5x+3=0" -a output.mp4
-
-# High quality
-python main.py "5x+3=0" -a -q h
-
-# Batch
+# Batch solve from file
 python main.py -f equations.txt
-
-# JSON export
-python main.py "5x+3=0" -o results.json
 ```
 
-## CLI Reference
+## Requirements
 
-```
-python main.py [equation] [options]
-
-positional:
-  equation              equation to solve
-
-options:
-  -f FILE, --file FILE  equations file (one per line)
-  -a, --animate [FILE]  render animation (optionally specify output .mp4)
-  -q {l,m,h,k}         animation quality (default: l)
-  -o FILE, --output     save results as JSON
-  -s, --silent          quiet output
-
-quality: l=480p15  m=720p30  h=1080p60  k=2160p60
-```
-
-## How It Works
-
-The solver uses a multi-phase pipeline:
-
-1. **mathsteps** (Node.js) — primary solver, produces detailed step-by-step solutions
-   - Phase 1: Simplify left side (expand, distribute, collect)
-   - Phase 2: Simplify right side
-   - Phase 3: Solve the simplified equation
-2. **SymPy CAS** (Python) — fallback for equations mathsteps can't handle
-
-## Supported Equations
-
-- Linear: `5x + 3 = 0`
-- Quadratic: `x^2 + 2x + 1 = 0`
-- Polynomial: `(x+2)^3 - (x-2)^3 = (2x+1)^3 - (2x-1)^3`
-- Exponential: `e^(2x) = 4`
-- Trigonometric: `sin(x) = 0`
-- Radicals: `sqrt(x+5) = x - 3`
-- Rational: `(x^2+1)/(x-1) = 3`
-- Complex roots, reciprocal, polynomial traps
-
-## Telegram Bot
-
-```bash
-export TELEGRAM_BOT_TOKEN="your_token"
-python telegram_bot.py
-```
-
-Commands: `/solve 5x+3=0` or `/animate 2x-6=0`
-
-## Dependencies
-
-**Python**: manim, sympy, python-telegram-bot, numpy, scipy
-**Node.js**: mathsteps
-
-## Credits
-
-- [Manim Community](https://github.com/ManimCommunity/manim) — animation engine
-- [mathsteps](https://github.com/google/mathsteps) — equation solver
+- Python 3.8+
+- Pillow, SymPy (core)
+- Node.js + mathsteps (detailed step solving)
+- Manim Community (optional, for video rendering)
 
 ## Support
 
-| | |
+If you find this useful, consider supporting development:
+
+| Method | Address / ID |
 |---|---|
 | PayPal | `paypal.com/ncp/payment/W78F6W4TXZ4CS` |
 | Binance | `1011264323` |
 | Bybit | `467077834` |
-| TRC20 | `TMW5uSDN6sMUBNirMoqY1icpsfa7GhPZfK` |
-| BEP20/ERC20 | `0x7a8887c2ac3e596f6170c9e28b44e6b6d025c854` |
+| TRC20 (USDT) | `TMW5uSDN6sMUBNirMoqY1icpsfa7GhPZfK` |
+| BEP20 / ERC20 | `0x7a8887c2ac3e596f6170c9e28b44e6b6d025c854` |
 | LTC | `LVswXiD6Vd2dejXvGbZLa1R8jkvg748F4q` |
 | TON | `UQAllRezWgHi3LPrSwyvAb4zazIph6j6goU7lMaqcFWFBxVH` |
 | BTC | `1rSX6BDN1nqDMyBHqceySkZSs6PHUP23m` |

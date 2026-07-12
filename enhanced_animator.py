@@ -1,7 +1,7 @@
 """
-Enhanced Math Steps Animator - Creates beautiful step-by-step math animations
+Math Steps Animator - Step-by-step math animations with Manim
 
-Math processing powered by mathsteps (primary) and SymPy (fallback).
+Math processing via mathsteps (primary) and SymPy (fallback).
 """
 
 from manim import *
